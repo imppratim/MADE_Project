@@ -1,0 +1,60 @@
+// Creating an automated data pipeline for extracting, processing, and storing tree planting data for Herbst 2023
+pipeline PlantingDataForFallPipeline {
+  
+  // Step 1: Extract data from the specified URL
+  block PlantingDataForFallExtractor oftype HttpExtractor {
+    url: "https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/stadt-neuss-herbstpflanzung-2023/exports/csv";
+  }
+  
+  // Step 2: Convert the extracted text data into a suitable format
+  block PlantingDataForFallTextInterpreter oftype TextFileInterpreter {}
+
+  // Step 3: Interpret the text data as CSV, using ';' as the delimiter
+  block PlantingDataForFallInterpreter oftype CSVInterpreter {
+    delimiter: ';';
+  }
+
+  // Step 4: Filter and validate the table data, specifying expected column types
+  block PlantingDataForFallValidFilter oftype TableInterpreter {
+    header: true;
+    columns: [
+      "lfd_nr" oftype integer,
+      "stadtteil" oftype StadtteilVogelsang,
+      "standort" oftype text,
+      "baumart_botanisch" oftype text,
+      "id" oftype GeoPattern,
+      "baumfamilie" oftype text
+    ];
+  }
+
+  // Define a value type for geographic coordinates in the specified pattern
+  valuetype GeoPattern oftype text {
+    constraints: [IDGeoPattern];
+  }
+
+  // Constraint to ensure geographic coordinates are formatted correctly
+  constraint IDGeoPattern oftype RegexConstraint {
+    regex: /^\d{1,3}\.\d+, \d{1,3}\.\d+$/;
+  }
+
+  // Define a value type for the 'stadtteil' column, specifically for Vogelsang entries
+  valuetype StadtteilVogelsang oftype text {
+    constraints: [Vogelsang];
+  }
+
+  // Constraint to ensure the 'stadtteil' starts with 'Vogelsang'
+  constraint Vogelsang oftype RegexConstraint {
+    regex: /^Vogelsang.*/;
+  }
+
+  // Step 5: Load the processed data into an SQLite database table named 'trees'
+  block PlantingDataForFallSQLiteLoader oftype SQLiteLoader {
+    table: "trees";
+    file: "trees.sqlite";
+  }
+
+  // Define the sequence of data processing from extraction to loading into the database
+  PlantingDataForFallExtractor -> PlantingDataForFallTextInterpreter;
+  PlantingDataForFallTextInterpreter -> PlantingDataForFallInterpreter -> PlantingDataForFallValidFilter -> PlantingDataForFallSQLiteLoader;
+
+}

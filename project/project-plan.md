@@ -35,7 +35,7 @@ Description: The traffic collision data, sourced from the Los Angeles City Open 
 
 ### Metadata URL: https://www.visualcrossing.com/resources/documentation/weather-data/weather-data-documentation/
 
-### Data URL: https://www.visualcrossing.com/weather-history/los%20angeles/metric/2020-01-01/2020-06-30
+### Data URL: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/retrievebulkdataset?&key=NGNV4J2JDYHQS2AT24WRV28NH&taskId=aae51ed3104c7803e597cd073839ce9b&zip=false
 
 Data Type: CSV
 Description: The weather data, obtained from Visual Crossing, provides historical weather information for Los Angeles, covering various meteorological parameters such as temperature, precipitation, visibility, wind speed, and humidity. This dataset is available on a daily basis and includes comprehensive records necessary to analyze environmental conditions. For this study, weather data from January to June 2020 will be used to match the traffic collision data timeframe, allowing for a detailed examination of how specific weather conditions correlate with road crashes

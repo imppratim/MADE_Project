@@ -26,10 +26,10 @@ The purpose of this study is to investigate the relationship between weather con
 
 ### Metadata URL: https://data.lacity.org/Public-Safety/Traffic-Collision-Data-from-2010-to-Present/d5tf-ez2w/about_data
 
-### Data URL: https://data.lacity.org/Public-Safety/Traffic-Collision-Data-from-2010-to-Present/d5tf-ez2w/data_preview
+### Data URL: https://data.lacity.org/resource/d5tf-ez2w.csv
 
 Data Type: CSV
-Description: The traffic collision data, sourced from the Los Angeles City Open Data Portal, provides detailed records of reported traffic incidents in Los Angeles from 2010 to the present. This dataset includes crucial information such as the date, time, and location of each collision, as well as factors related to crash severity, causes, and any injuries or fatalities involved. For this study, the dataset will be filtered to include only incidents from January to June 2020, aligning with the weather data.
+Description: The traffic collision data, sourced from the Los Angeles City Open Data Portal, provides detailed records of reported traffic incidents in Los Angeles from 2010 to the present. This dataset includes crucial information such as the date, time, and location of each collision, as well as factors related to crash severity, causes, and any injuries or fatalities involved. For this study, the dataset will be filtered to include only incidents from January to June 2020, aligning with the weather data. We need an account to download or fetch data more than 1000 and for that reason we have used a separate function sue to the row limit.
 
 #Datasource 2: Weather data
 
@@ -38,7 +38,7 @@ Description: The traffic collision data, sourced from the Los Angeles City Open 
 ### Data URL: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/retrievebulkdataset?&key=NGNV4J2JDYHQS2AT24WRV28NH&taskId=aae51ed3104c7803e597cd073839ce9b&zip=false
 
 Data Type: CSV
-Description: The weather data, obtained from Visual Crossing, provides historical weather information for Los Angeles, covering various meteorological parameters such as temperature, precipitation, visibility, wind speed, and humidity. This dataset is available on a daily basis and includes comprehensive records necessary to analyze environmental conditions. For this study, weather data from January to June 2020 will be used to match the traffic collision data timeframe, allowing for a detailed examination of how specific weather conditions correlate with road crashes
+Description: The weather data, obtained from Visual Crossing, provides historical weather information for Los Angeles, covering various meteorological parameters such as temperature, precipitation, visibility, wind speed, and humidity. This dataset is available on a daily basis and includes comprehensive records necessary to analyze environmental conditions. For this study, weather data from January to June 2020 will be used to match the traffic collision data timeframe, allowing for a detailed examination of how specific weather conditions correlate with road crashes.
 
 ## Work Packages
 

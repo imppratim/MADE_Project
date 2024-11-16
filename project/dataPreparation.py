@@ -42,7 +42,7 @@ def processTfData(tfDataFrame):
         logger.info(tfDataFrame['date_occ'].head())
 
         #columns to drop
-        dropColumn = ['dr_no', 'date_rptd', 'area', 'area_name', 'rpt_dist_no', 'crm_cd', 'crm_cd_desc', 'mocodes', 'vict_age', 'vict_sex', 'vict_descent', 'premis_cd', 'premis_desc', 'location', 'cross_street', 'location_1']
+        dropColumn = ['dr_no', 'date_rptd', 'area', 'area_name', 'rpt_dist_no', 'crm_cd', 'crm_cd_desc', 'mocodes', 'vict_age', 'vict_sex', 'vict_descent', 'premis_cd', 'premis_desc', 'location', 'cross_street', 'location_1', 'time_occ']
         tfDataFrame = tfDataFrame.drop(columns=dropColumn)
         
         return tfDataFrame
@@ -62,7 +62,7 @@ def weatherDataProcess(weatherDataFrame):
         pd.DataFrame: Processed DataFrame with selected columns removed.
     """
     dropColumn = [
-        'name', 'tempmax', 'tempmin', 'feelslikemax', 'feelslikemin', 'feelslike', 'dew', 
+        'name', 'tempmax', 'tempmin', 'feelslikemax', 'feelslikemin', 'feelslike', 'dew', 'icon', 'precip',
         'precipprob', 'precipcover', 'preciptype', 'snow', 'snowdepth', 'windgust', 'winddir', 
         'sealevelpressure', 'cloudcover', 'solarradiation', 'solarenergy', 'uvindex', 
         'severerisk', 'sunrise', 'sunset', 'moonphase', 'conditions', 'description', 'stations'

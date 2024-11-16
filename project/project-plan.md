@@ -4,19 +4,19 @@
 
 <!-- Give your project a short title. -->
 
-Investigating the impact of weather conditions on road crashes in Los Angeles
+Analyzing the Impact of Weather on Traffic Collision Dynamics in Los Angeles
 
 ## Main Question
 
 <!-- Think about one main question you want to answer based on the data. -->
 
-What is the correlation between weather conditions and traffic collisions in Los Angeles from January to June 2020?
+What is the correlation between weather conditions and traffic collisions in Los Angeles from January to June 2020, and how do weather factors impact traffic collisions?
 
 ## Description
 
 <!-- Describe your data science project in max. 200 words. Consider writing about why and how you attempt it. -->
 
-The purpose of this study is to investigate the relationship between weather conditions and road crashes in Los Angeles. This research will examine whether significant correlations exist between daily weather parameters such as temperature, rainfall, visibility, and wind speed and the frequency and severity of road crashes. Understanding this relationship will offer valuable insights for city planners and public safety officials, supporting strategies to improve road safety and reduce weather-related accidents. The study will employ statistical analysis and data visualization techniques to identify patterns and trends, presenting a comprehensive view of how weather impacts road safety in Los Angeles.
+This study aims to explore the relationship between weather conditions and road collisions in Los Angeles, focusing on identifying significant correlations between daily weather factors—such as temperature, humidity, visibility, and wind speed, frequency of traffic accidents from January to June 2020. By uncovering these connections, the research seeks to provide valuable insights for city planners and public safety officials, enabling the development of strategies to enhance road safety and mitigate weather-related accidents. Utilizing statistical analysis and data visualization techniques, the study will uncover patterns and trends, offering a comprehensive perspective on how weather influences road safety in Los Angeles.
 
 ## Datasources
 

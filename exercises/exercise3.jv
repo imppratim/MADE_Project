@@ -1,97 +1,93 @@
-pipeline EconomicDataPipeline {
+pipeline EconomicMetricsPipeline {
 
-    // Define value types with specific range constraints
-    valuetype decimalRangeZeroToOne oftype decimal {
-        constraints: [BetweenZeroAndOne];
+    // Defining custom value types with constraints
+    valuetype decimalBetweenZeroAndOne oftype decimal {
+        constraints: [WithinZeroToOne];
     }
 
-    valuetype nonNegativeDecimalValue oftype decimal {
-        constraints: [NonNegativeConstraint];
+    valuetype nonNegativeDecimal oftype decimal {
+        constraints: [GreaterThanOrEqualToZero];
     }
 
-    // Constraint to ensure values are between 0 and 1
-    constraint BetweenZeroAndOne oftype RangeConstraint {
+    constraint WithinZeroToOne oftype RangeConstraint {
         lowerBound: 0;
         upperBound: 1;
     }
 
-    // Constraint to ensure values are non-negative
-    constraint NonNegativeConstraint oftype RangeConstraint {
+    constraint GreaterThanOrEqualToZero oftype RangeConstraint {
         lowerBound: 0;
     }
 
-    // Block to download the dataset from the specified URL
-    block DatasetFetcher oftype HttpExtractor {
+    // Downloading the file from a specified URL
+    block DataDownloader oftype HttpExtractor {
         url: 'https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx';
         retries: 3;
     }
 
-    // Block to interpret and process the Excel file
-    block ExcelProcessor oftype XLSXInterpreter { }
+    block FileInterpreter oftype XLSXInterpreter { }
 
-    // Block to specify the sheet to be processed
-    block SheetSelector oftype SheetPicker {
+    // Selecting the sheet to be processed
+    block TargetSheetSelector oftype SheetPicker {
         sheetName: "Figure S5.1.2";
     }
 
-    // Block to select the range of cells containing relevant data
-    block DataRangeExtractor oftype CellRangeSelector {
+    // Extracting the specified cell range for data processing
+    block CellRangeExtractor oftype CellRangeSelector {
         select: range P2:S45;
     }
 
-    // Block to modify headers for better readability and understanding
-    block ColumnHeaderUpdater oftype CellWriter {
+    // Renaming columns for clarity
+    block HeaderRenamer oftype CellWriter {
         at: range A1:D1;
         write: [
-            'Country ID',
-            'Economic Classification',
-            'GDP Per Capita Value',
-            'Bond Issue Percentage'
+            'Country Code',
+            'Economy',
+            'GDP per Capita',
+            'Bond Issuance Share'
         ];
     }
 
-    // Block to interpret GDP-related data using predefined value types
-    block GDPParser oftype TableInterpreter {
+    // Parsing GDP-related data with specified column types
+    block GDPDataParser oftype TableInterpreter {
         header: true;
         columns: [
-            'Country ID' oftype CountryCodeAlpha3,
-            'GDP Per Capita Value' oftype nonNegativeDecimalValue,
+            'Country Code' oftype CountryCodeAlpha3,
+            'GDP per Capita' oftype nonNegativeDecimal,
         ];
     }
 
-    // Block to interpret bond-related data using predefined value types
-    block BondParser oftype TableInterpreter {
+    // Parsing Bond-related data with specified column types
+    block BondDataParser oftype TableInterpreter {
         header: true;
         columns: [
-            'Country ID' oftype CountryCodeAlpha3,
-            'Bond Issue Percentage' oftype decimalRangeZeroToOne,
+            'Country Code' oftype CountryCodeAlpha3,
+            'Bond Issuance Share' oftype decimalBetweenZeroAndOne,
         ];
     }
 
-    // Block to save GDP data into the SQLite database
-    block GDPStorage oftype SQLiteLoader {
-        table: 'GDPMetrics';
+    // Loading GDP data into the SQLite database
+    block GDPSaver oftype SQLiteLoader {
+        table: 'gdpPerCapita';
         file: 'country-stats.sqlite';
     }
 
-    // Block to save bond issuance data into the SQLite database
-    block BondStorage oftype SQLiteLoader {
-        table: 'BondMetrics';
+    // Loading Bond data into the SQLite database
+    block BondSaver oftype SQLiteLoader {
+        table: 'bondIssuance';
         file: 'country-stats.sqlite';
     }
 
-    // Define the sequence of operations for the pipeline
-    DatasetFetcher
-        -> ExcelProcessor
-        -> SheetSelector
-        -> DataRangeExtractor
-        -> ColumnHeaderUpdater;
+    DataDownloader
+        -> FileInterpreter
+        -> TargetSheetSelector
+        -> CellRangeExtractor
+        -> HeaderRenamer;
 
-    ColumnHeaderUpdater
-        -> GDPParser
-        -> GDPStorage;
+    HeaderRenamer
+        -> GDPDataParser
+        -> GDPSaver;
 
-    ColumnHeaderUpdater
-        -> BondParser
-        -> BondStorage;
+    HeaderRenamer
+        -> BondDataParser
+        -> BondSaver;
 }

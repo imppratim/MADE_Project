@@ -1,26 +1,25 @@
 pipeline EconomicMetricsPipeline {
 
     // Defining custom value types with constraints
-    valuetype set_Difference oftype decimal {
-        constraints: [set_boundary];
+    valuetype decimalBetweenZeroAndOne oftype decimal {
+        constraints: [WithinZeroToOne];
     }
 
-    valuetype set_positive oftype decimal {
-        constraints: [set_range];
+    valuetype nonNegativeDecimal oftype decimal {
+        constraints: [GreaterThanOrEqualToZero];
     }
 
-    constraint set_boundary oftype RangeConstraint {
+    constraint WithinZeroToOne oftype RangeConstraint {
         lowerBound: 0;
         upperBound: 1;
     }
 
-    constraint set_range oftype RangeConstraint {
+    constraint GreaterThanOrEqualToZero oftype RangeConstraint {
         lowerBound: 0;
     }
-    
 
     // Downloading the file from a specified URL
-    block set_data_downloader oftype HttpExtractor {
+    block DataDownloader oftype HttpExtractor {
         url: 'https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx';
         retries: 3;
     }
@@ -28,12 +27,12 @@ pipeline EconomicMetricsPipeline {
     block FileInterpreter oftype XLSXInterpreter { }
 
     // Selecting the sheet to be processed
-    block pick_targeted_sheet oftype SheetPicker {
+    block TargetSheetSelector oftype SheetPicker {
         sheetName: "Figure S5.1.2";
     }
 
     // Extracting the specified cell range for data processing
-    block set_cell_range oftype CellRangeSelector {
+    block CellRangeExtractor oftype CellRangeSelector {
         select: range P2:S45;
     }
 
@@ -53,7 +52,7 @@ pipeline EconomicMetricsPipeline {
         header: true;
         columns: [
             'Country Code' oftype CountryCodeAlpha3,
-            'GDP per Capita' oftype set_positive,
+            'GDP per Capita' oftype nonNegativeDecimal,
         ];
     }
 
@@ -62,7 +61,7 @@ pipeline EconomicMetricsPipeline {
         header: true;
         columns: [
             'Country Code' oftype CountryCodeAlpha3,
-            'Bond Issuance Share' oftype set_positive,
+            'Bond Issuance Share' oftype decimalBetweenZeroAndOne,
         ];
     }
 
@@ -78,10 +77,10 @@ pipeline EconomicMetricsPipeline {
         file: 'economic_metrics.sqlite';
     }
 
-    set_data_downloader
+    DataDownloader
         -> FileInterpreter
-        -> pick_targeted_sheet
-        -> set_cell_range
+        -> TargetSheetSelector
+        -> CellRangeExtractor
         -> HeaderRenamer;
 
     HeaderRenamer

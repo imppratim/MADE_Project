@@ -1,0 +1,138 @@
+//Pipeline for Battery Temperature Measurements of Mobile Devices Outdoors
+pipeline BatteryTempMeasurePipeline {
+
+    // Extract the data and process it through a series of steps
+    BatteryTempMeasureExtractor -> BatteryTempMeasureZipInterpreter;
+
+    BatteryTempMeasureZipInterpreter
+        -> BatteryTempMeasureFilePicker
+        -> BatteryTempMeasureTextFileInterpreter
+        -> BatteryTempMeasureCSVInterpreter
+        -> BatteryTempMeasureHeaderRename
+        -> BatteryTempMeasureBatteryTemperatureHeaderRename
+        -> BatteryTempMeasureTableInterpreter
+        -> TemperatureColumnTransformer 
+        -> BatteryTemperatureColumnTransformer
+        -> BatteryTempMeasureLoader;
+
+    // Extracting the zip file from the specified URL
+    block BatteryTempMeasureExtractor oftype HttpExtractor{
+        // URL from which the zip file is fetched
+        url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+    }
+
+    // Block for extracting contents from the zip file
+    block BatteryTempMeasureZipInterpreter oftype ArchiveInterpreter{
+        // Specifying that the file is a zip archive
+        archiveType: "zip";
+    }
+
+    // Pick the CSV file (from the extracted files)
+    block BatteryTempMeasureFilePicker oftype FilePicker {
+        // File path for the CSV file within the extracted archive
+        path: "/data.csv";
+    }
+    
+    // Block for interpreting the text file (generic interpretation step)
+    block BatteryTempMeasureTextFileInterpreter oftype TextFileInterpreter {}
+
+    //Interpret the CSV file with a semicolon delimiter
+    block BatteryTempMeasureCSVInterpreter oftype CSVInterpreter {
+        // Specifying the delimiter used in the CSV file (semicolon)
+        delimiter: ";";
+    }
+
+    //Rename headers in the CSV to more meaningful column names
+    block BatteryTempMeasureHeaderRename oftype CellWriter {
+        // Range of cells where the column headers are located
+        at: range A1:E1;
+        // Renaming the columns to English for clarity
+        write: ['id','producer','model','month','temperature'];
+    }
+
+    // Rename the "battery_temperature" column header
+    block BatteryTempMeasureBatteryTemperatureHeaderRename oftype CellWriter {
+        // The cell where the "battery_temperature" header is located
+        at: cell J1;
+        // Renaming it to 'battery_temperature'
+        write: ['battery_temperature'];
+    }
+
+    // Transformation logic for converting Celsius to Fahrenheit
+    transform CelciusToFahrenheit {
+        // Input: Temperature in Celsius
+        from TemperatureInCelcius oftype decimal;
+        // Output: Temperature in Fahrenheit
+        to TemperatureInFahrenheit oftype decimal;
+        // Formula for converting Celsius to Fahrenheit
+        TemperatureInFahrenheit: ((TemperatureInCelcius * 9/5) + 32);
+    }
+
+    // Apply the Celsius to Fahrenheit transformation to the 'temperature' column
+    block TemperatureColumnTransformer oftype TableTransformer {
+        // Input column to be transformed
+        inputColumns: ['temperature'];
+        // Output column after transformation (same column name, just transformed)
+        outputColumn: 'temperature';
+        // Use the Celsius to Fahrenheit transformation logic
+        uses: CelciusToFahrenheit;
+    }
+
+    // Apply the Celsius to Fahrenheit transformation to the 'battery_temperature' column
+    block BatteryTemperatureColumnTransformer oftype TableTransformer {
+        // Input column to be transformed
+        inputColumns: ['battery_temperature'];
+        // Output column after transformation (same column name, just transformed)
+        outputColumn: 'battery_temperature';
+        uses: CelciusToFahrenheit;
+    }
+
+    // Define a range constraint for positive integers (e.g., for the 'id' field)
+    valuetype PosInteger oftype integer{
+        // Constraint on the 'id' to be positive
+        constraints: [ RangePosInteger];
+    }
+
+    // Constraint to ensure the integer value is greater than zero
+    constraint RangePosInteger oftype RangeConstraint{
+        lowerBound: 0;
+        lowerBoundInclusive: false; // The value must be greater than 0
+    }
+
+    // Define a range constraint for the 'month' field
+    valuetype ListMonth oftype integer{
+        // Constraint on the 'month' to be between 1 and 12 (inclusive)
+        constraints: [ RangeMonth];
+    }
+
+    // Constraint for validating that the 'month' is between 1 and 12
+    constraint RangeMonth oftype RangeConstraint{
+        lowerBound: 1;
+        lowerBoundInclusive: true;  // 'month' must be >= 1
+        upperBound: 12;
+        upperBoundInclusive: true;  // 'month' must be <= 12
+    }
+
+    //Interpret the data from the CSV into a structured table
+    block BatteryTempMeasureTableInterpreter oftype TableInterpreter {
+        // Define that the first row contains headers
+        header: true;
+        // Define the columns with data types
+        columns: [
+            "id" oftype PosInteger,  // 'id' as positive integer
+            "producer" oftype text,  // 'producer' as text
+            "model" oftype text,     // 'model' as text
+            "month" oftype ListMonth, // 'month' as integer with range 1 to 12
+            "temperature" oftype decimal, // 'temperature' as decimal
+            "battery_temperature" oftype decimal, // 'battery_temperature' as decimal
+        ];
+    }
+
+    // Load the processed table into an SQLite database
+    block BatteryTempMeasureLoader oftype SQLiteLoader {
+        // Target table in the database
+        table: "temperatures";
+        // Path to the SQLite database file
+        file: "temperatures.sqlite";
+    }
+}

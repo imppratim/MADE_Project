@@ -1,0 +1,76 @@
+// Pipeline for processing GTFS data
+pipeline GTFSPipeline {
+
+  // 1. Load GTFS Data (stops.txt from a zip file)
+  GTFSExtractor
+    -> GTFSZipInterpreter
+    -> GTFSTextFilePicker
+    -> GTFSTextFileInterpreter
+    -> GTFSCSVInterpreter
+    -> GTFSTableInterpreter
+    -> GTFSLoader;
+
+  // 2. Extract GTFS zip file from URL
+  block GTFSExtractor oftype HttpExtractor {
+    url: "https://gtfs.rhoenenergie-bus.de/GTFS.zip";
+  }
+
+  // 3. Interpret the downloaded zip file as archive
+  block GTFSZipInterpreter oftype ArchiveInterpreter {
+    archiveType: "zip";
+  }
+
+  // 4. Pick specific file ("stops.txt") from the extracted archive
+  block GTFSTextFilePicker oftype FilePicker {
+    path: "/stops.txt";  // Path within the archive
+  }
+
+  // 5. Interpret the chosen file as a text file
+  block GTFSTextFileInterpreter oftype TextFileInterpreter {
+    encoding: "utf8";
+  }
+
+  // 6. Parse the text file as CSV with specific delimiters and escaping
+  block GTFSCSVInterpreter oftype CSVInterpreter {
+    delimiter: ',';
+    enclosing: '"';
+    enclosingEscape: '"';
+  }
+
+  // 7. Define custom data types for specific columns
+  valuetype Zone1925 oftype integer {
+    constraints: [ZoneIdConstraint];
+  }
+
+  constraint ZoneIdConstraint on integer:
+    value == 1925;
+
+  valuetype GeoCoordinate90 oftype decimal {
+    constraints: [GeoCoordinateRange];
+  }
+
+  constraint GeoCoordinateRange oftype RangeConstraint {
+    lowerBound: -90;
+    lowerBoundInclusive: true;
+    upperBound: 90;
+    upperBoundInclusive: true;
+  }
+
+  // 8. Define the structure of the data as a table
+  block GTFSTableInterpreter oftype TableInterpreter {
+    header: true;
+    columns: [
+      "stop_id" oftype integer,
+      "stop_name" oftype text,
+      "stop_lat" oftype GeoCoordinate90,
+      "stop_lon" oftype GeoCoordinate90,
+      "zone_id" oftype Zone1925,
+    ];
+  }
+
+  // 9. Load the parsed table into a SQLite database
+  block GTFSLoader oftype SQLiteLoader {
+    table: "stops";
+    file: "gtfs.sqlite";
+  }
+}

@@ -1,37 +1,24 @@
 # Methods of Advanced Data Engineering Template Project
 
-This template project provides some structure for your open data project in the MADE module at FAU.
-This repository contains (a) a data science project that is developed by the student over the course of the semester, and (b) the exercises that are submitted over the course of the semester.
+# Project Plan
+ Analyzing the Impact of Weather on Traffic Collision Dynamics in Los Angeles
 
-To get started, please follow these steps:
-1. Create your own fork of this repository. Feel free to rename the repository right after creation, before you let the teaching instructors know your repository URL. **Do not rename the repository during the semester**.
+## Main Question
+The main question is: What is the correlation between weather conditions and traffic collisions in Los Angeles from January to June 2020, and how do weather factors impact traffic collisions?
 
-## Project Work
-Your data engineering project will run alongside lectures during the semester. We will ask you to regularly submit project work as milestones, so you can reasonably pace your work. All project work submissions **must** be placed in the `project` folder.
+## Description
+The study examines whether daily weather variables—such as temperature, humidity, visibility, and wind speed—are correlated with traffic accidents. By understanding these potential connections, the study aims to provide valuable insights for city planners, traffic managers, and public safety officials to enhance road safety and reduce the risk of weather-related collisions
 
-### Exporting a Jupyter Notebook
-Jupyter Notebooks can be exported using `nbconvert` (`pip install nbconvert`). For example, to export the example notebook to HTML: `jupyter nbconvert --to html examples/final-report-example.ipynb --embed-images --output final-report.html`
+### Data Sources
+Traffic Collision Data
+• Metadata URL: https://data.lacity.org/Public-Safety/Traffic-Collision-Data-from-2010-to-Present/d5tf-ez2w/aboutdata
+• Data URL: https://data.lacity.org/resource/d5tf-ez2w.csv
+• Data Type: CSV
+• Description: This file contains the data provided by the Los Angeles Police Department for January to June 2020 and the dataset owner is LAPD OpenData
 
-
-## Exercises
-During the semester you will need to complete exercises using [Jayvee](https://github.com/jvalue/jayvee). You **must** place your submission in the `exercises` folder in your repository and name them according to their number from one to five: `exercise<number from 1-5>.jv`.
-
-In regular intervals, exercises will be given as homework to complete during the semester. Details and deadlines will be discussed in the lecture, also see the [course schedule](https://made.uni1.de/).
-
-### Exercise Feedback
-We provide automated exercise feedback using a GitHub action (that is defined in `.github/workflows/exercise-feedback.yml`). 
-
-To view your exercise feedback, navigate to Actions → Exercise Feedback in your repository.
-
-The exercise feedback is executed whenever you make a change in files in the `exercise` folder and push your local changes to the repository on GitHub. To see the feedback, open the latest GitHub Action run, open the `exercise-feedback` job and `Exercise Feedback` step. You should see command line output that contains output like this:
-
-```sh
-Found exercises/exercise1.jv, executing model...
-Found output file airports.sqlite, grading...
-Grading Exercise 1
-	Overall points 17 of 17
-	---
-	By category:
-		Shape: 4 of 4
-		Types: 13 of 13
-```
+Weather Data 
+• Metadata URL: https://www.visualcrossing.com/resources/documentation/
+weather-data/weather-data-documentation/
+• Data URL: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/retrievebulkdataset?&key=NGNV4J2JDYHQS2AT24WRV28NH&taskId=aae51ed3104c7803e597cd073839ce9b&zip=false
+• Data Type: CSV
+Description: This file contains the temperature, wind speed, humidity, and visibility of Los Angeles from January to June 2020.

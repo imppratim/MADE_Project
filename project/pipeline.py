@@ -96,7 +96,7 @@ def dataframe_to_CSV(df_data, filename):
 def main():
     # Define URLs and parameters
     traffic_data_url = "https://data.lacity.org/resource/d5tf-ez2w.csv"
-    weather_data_url = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/retrievebulkdataset?&key=NGNV4J2JDYHQS2AT24WRV28NH&taskId=aae51ed3104c7803e597cd073839ce9b&zip=false'
+    weather_data_url = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/los%20angeles/2020-01-01/2020-06-30?unitGroup=metric&include=days&key=NGNV4J2JDYHQS2AT24WRV28NH&contentType=csv'
 
     traffic_params = {
         "$where": "date_occ >= '2020-01-01' AND date_occ < '2020-07-01'",

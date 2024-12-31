@@ -42,7 +42,7 @@ def processTfData(tfDataFrame):
         logger.info(tfDataFrame['date_occ'].head())
 
         #columns to drop
-        dropColumn = ['dr_no', 'date_rptd', 'area', 'area_name', 'rpt_dist_no', 'crm_cd', 'crm_cd_desc', 'mocodes', 'vict_age', 'vict_sex', 'vict_descent', 'premis_cd', 'premis_desc', 'location', 'cross_street', 'location_1', 'time_occ']
+        dropColumn = ['dr_no', 'date_rptd', 'area', 'area_name', 'rpt_dist_no', 'crm_cd', 'crm_cd_desc', 'mocodes', 'vict_age', 'vict_sex', 'vict_descent', 'premis_cd', 'premis_desc', 'location', 'cross_street', 'location_1']
         tfDataFrame = tfDataFrame.drop(columns=dropColumn)
         
         return tfDataFrame

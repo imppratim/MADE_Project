@@ -108,10 +108,12 @@ def main():
     traffic_df = collect_traffic_data(traffic_data_url, traffic_params)
     
     if not traffic_df.empty:
-        processed_traffic_collision_data = processTfData(traffic_df)
+        processed_traffic_collision_data, daily_counts = processTfData(traffic_df)
         dataframe_to_CSV(processed_traffic_collision_data, "traffic_collision_data.csv")
+        dataframe_to_CSV(daily_counts, "daily_collision_counts.csv")
     else:
         logging.error("Traffic collision data retrieval failed.")
+        return
 
     # Fetch and process weather data
     logging.info("Starting data retrieval for weather data...")
@@ -122,6 +124,9 @@ def main():
         dataframe_to_CSV(processed_weather_data, "weather_data.csv")
     else:
         logging.error("Weather data retrieval failed.")
+        return
+
 
 if __name__ == "__main__":
     main()
+

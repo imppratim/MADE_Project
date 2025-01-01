@@ -45,11 +45,15 @@ def processTfData(tfDataFrame):
         dropColumn = ['dr_no', 'date_rptd', 'area', 'area_name', 'rpt_dist_no', 'crm_cd', 'crm_cd_desc', 'mocodes', 'vict_age', 'vict_sex', 'vict_descent', 'premis_cd', 'premis_desc', 'location', 'cross_street', 'location_1']
         tfDataFrame = tfDataFrame.drop(columns=dropColumn)
         
-        return tfDataFrame
+        # Add a column for the number of collisions per day
+        daily_counts = tfDataFrame.groupby('date_occ').size().reset_index(name='collision_count')
+
+        # Return the processed data and daily counts
+        return tfDataFrame, daily_counts
 
     except Exception as e:
         logger.error(f"An error occurred during data processing: {e}")
-        return None
+        return None, None
 
 def weatherDataProcess(weatherDataFrame):
     """

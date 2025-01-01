@@ -23,7 +23,7 @@ def processTfData(tfDataFrame):
             invalid_dates = tfDataFrame[tfDataFrame['date_occ'].isnull()]
             logger.error(f"Null values detected in the 'date_occ' column after conversion. Rows with invalid dates:\n{invalid_dates}")
             # Optionally, drop these rows or handle as needed
-            tfDataFrame.drop(subset=['date_occ'], inplace=True)
+            tfDataFrame = tfDataFrame.dropna(subset=['date_occ'])
 
         # Filter for dates between Jan 1st, 2020 and Jun 30th, 2020
         start_date = pd.to_datetime("2020-01-01")
@@ -41,7 +41,7 @@ def processTfData(tfDataFrame):
         logger.info("First few entries in 'date_occ' column after conversion and filtering:")
         logger.info(tfDataFrame['date_occ'].head())
 
-        #columns to drop
+        # Columns to drop
         dropColumn = ['dr_no', 'date_rptd', 'area', 'area_name', 'rpt_dist_no', 'crm_cd', 'crm_cd_desc', 'mocodes', 'vict_age', 'vict_sex', 'vict_descent', 'premis_cd', 'premis_desc', 'location', 'cross_street', 'location_1']
         tfDataFrame = tfDataFrame.drop(columns=dropColumn)
         

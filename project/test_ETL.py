@@ -50,18 +50,25 @@ def test_get_traffic_collision_data_success():
 
 def test_traffic_collision_data(traffic_collision_data):
     """Test the processing of traffic collision data."""
-    output = processTfData(traffic_collision_data)
+    # Unpack the tuple returned by processTfData
+    processed_data, daily_counts = processTfData(traffic_collision_data)
     
-    assert output is not None
+    # Assert that both processed data and daily counts are not None
+    assert processed_data is not None, "Processed data should not be None"
+    assert daily_counts is not None, "Daily counts should not be None"
     
-    # Check for the correct columns in the output
+    # Check for the correct columns in the processed_data
     expected_columns = ['date_occ', 'time_occ']  # Update to match actual columns
     for column in expected_columns:
-        assert column in output.columns, f"Column {column} not found in output DataFrame."
+        assert column in processed_data.columns, f"Column {column} not found in processed DataFrame."
     
-    # Save the output to CSV
-    dataframe_to_CSV(output, 'traffic_collision_data.csv')
-
+    # Optional: Check that daily_counts has the expected columns
+    expected_daily_counts_columns = ['date_occ', 'collision_count']  # Example; modify based on actual output
+    for column in expected_daily_counts_columns:
+        assert column in daily_counts.columns, f"Column {column} not found in daily counts DataFrame."
+    
+    # Save the processed data to CSV
+    dataframe_to_CSV(processed_data, 'traffic_collision_data.csv')
 
 def test_weather_data(weather_data):
     """Test the processing of weather data."""

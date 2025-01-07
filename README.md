@@ -2,6 +2,8 @@
 
 # Project Plan
  Analyzing the Impact of Weather on Traffic Collision Dynamics in Los Angeles
+ 
+<img src="project\project_img.jpg" width="800" height="466">
 
 ## Main Question
 The main question is: What is the correlation between weather conditions and traffic collisions in Los Angeles from January to June 2020, and how do weather factors impact traffic collisions?

@@ -1,4 +1,4 @@
-# Methods of Advanced Data Engineering Template Project
+# Methods of Advanced Data Engineering Project
 
 # Project Plan
  Analyzing the Impact of Weather on Traffic Collision Dynamics in Los Angeles
@@ -19,7 +19,7 @@ https://data.lacity.org/Public-Safety/Traffic-Collision-Data-from-2010-to-Presen
 https://data.lacity.org/resource/d5tf-ez2w.csv
 ### Data Type: 
 CSV
-### Description: 
+#### Description: 
 This file contains the data provided by the Los Angeles Police Department for January to June 2020 and the dataset owner is LAPD OpenData
 
 ## Weather Data 
@@ -29,5 +29,5 @@ https://www.visualcrossing.com/resources/documentation/weather-data/weather-data
 https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/retrievebulkdataset?&key=NGNV4J2JDYHQS2AT24WRV28NH&taskId=aae51ed3104c7803e597cd073839ce9b&zip=false
 ### Data Type: 
 CSV
-### Description: 
+#### Description: 
 This file contains the temperature, wind speed, humidity, and visibility of Los Angeles from January to June 2020.
